@@ -1,0 +1,15 @@
+services:
+  web:
+    build: .
+    env_file:
+      - .env
+    restart: unless-stopped
+    depends_on:
+      - database
+
+  database:
+    image: mariadb
+    env_file:
+      - .env
+    volumes:
+      - ./mariadb-data:/var/lib/mysql

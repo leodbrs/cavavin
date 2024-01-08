@@ -1,0 +1,22 @@
+{
+  "python.pythonPath": "/usr/local/bin/python",
+  "python.linting.pylintEnabled": false,
+  "python.linting.enabled": true,
+  "python.linting.flake8Args": [
+    "--ignore=E501",
+    "--max-line-length=120"
+  ],
+  "python.formatting.provider": "black",
+  "editor.formatOnSave": true,
+  "files.exclude": {
+    "**/__pycache__": true,
+    "**/.pytest_cache": true,
+    "**/.mypy_cache": true,
+    "**/.ruff_cache": true
+  },
+  "editor.codeActionsOnSave": {
+    "source.fixAll": "explicit"
+  },
+  "python.analysis.indexing": true,
+  "python.analysis.autoImportCompletions": true
+}
