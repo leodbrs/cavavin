@@ -1,0 +1,26 @@
+meta {
+  name: wine_get
+  type: http
+  seq: 4
+}
+
+post {
+  url: http://localhost:5001/api/v1/wine
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "vineyard": "Château de Pibarnon",
+    "name": "Bandol",
+    "wine_type": "RED",
+    "wine_region": "PROVENCE",
+    "year": 2015,
+    "description": "A great wine from Provence",
+    "community_rating": 5,
+    "label_photo": "https://www.wine.com/product/images/w_750,h_3000/Chateau-de-Pibarnon-Bandol-20/372355.jpg",
+    "price": 1,
+    "archived": false
+  }
+}

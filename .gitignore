@@ -1,0 +1,10 @@
+.mypy_cache/
+__pycache__/
+.pytest_cache/
+.ruff_cache/
+.env
+mariadb-data/
+migrations/
+classes.dot
+.DS_Store
+packages.dot

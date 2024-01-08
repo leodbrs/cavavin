@@ -1,0 +1,360 @@
+{% extends "base.html" %}
+
+{% block title %}Add bottle{% endblock %}
+
+{% block content %}
+<div class="w-full">
+    <h1 class="text-2xl font-semibold text-gray-800 mb-6">Add a bottle</h1>
+    <div class="flex gap-4">
+        <div id="cellardiv" class="flex-auto bg-white shadow-md rounded-md p-8 mb-4">
+            <h2 class="pb-4 text-lg font-semibold">Select a wine</h2>
+            <div class="mb-8">
+                <div class="flex">
+                    <select id="wineSelect" class="focus:outline-none focus:ring focus:border-indigo-500 shadow
+                    border rounded-md w-full py-2 px-3 text-gray-700 mb-5
+                    leading-tight focus:outline-none focus:shadow-outline w-64">
+                        <option value="0">-- Add a new wine --</option>
+                        {% for wine in wines %}
+                        <option value="{{ wine.id }}" data-wine-name="{{ wine.name }}"
+                            data-wine-vineyard="{{ wine.vineyard }}" data-wine-year="{{ wine.year }}"
+                            data-wine-type="{{ wine.type.value | capitalize }}"
+                            data-wine-img-url="{{ wine.label_photo }}" data-wine-description="{{ wine.description }}"
+                            data-wine-region="{{ wine.region.name }}" data-wine-price="{{ wine.price }}">
+                            {{ wine.name }} ({{ wine.year }} - {{ wine.type.value | capitalize }} - {{ wine.region.name
+                            }})
+                        </option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="flex">
+                    <div class="flex-shrink-0 mb-4 mr-4 max-w-xs xs:h-112 md:h-40 lg:h-48 xl:h-64 overflow-hidden">
+                        <img src="https://media.discordapp.net/attachments/800823275907055627/1190412877862023231/green_bottle-removebg-preview.png?ex=65aaefe2&is=65987ae2&hm=f3695b616d85807c94ef476055f60095c016f4bef8135a09d76cf7a3e81bd7ed&=&format=webp&quality=lossless&width=228&height=657"
+                            alt="wine image" class="wine-image w-full h-full object-cover">
+                    </div>
+                    <div class="flex-auto mr-4">
+                        <div class="flex w-full">
+                            <div class="mb-4 mr-4 w-full">
+                                <label for="name" class="block text-sm mb-1">Name</label>
+                                <input type="text" id="name" name="name" class="focus:outline-none focus:ring focus:border-indigo-500 shadow
+                                    appearance-none
+                                    border rounded-md w-full py-2 px-3 text-gray-700 mb-3
+                                    leading-tight focus:outline-none focus:shadow-outline">
+                            </div>
+                            <div class="mb-4 w-full">
+                                <label for="vineyard" class="block text-sm mb-1">Vineyard</label>
+                                <input type="text" id="vineyard" name="vineyard" class="focus:outline-none focus:ring focus:border-indigo-500 shadow
+                                    appearance-none
+                                    border rounded-md w-full py-2 px-3 text-gray-700 mb-3
+                                    leading-tight focus:outline-none focus:shadow-outline">
+                            </div>
+                        </div>
+                        <div class="flex w-full">
+                            <div class="mb-4 mr-4 w-full">
+                                <label for="year" class="block text-sm mb-1">Year</label>
+                                <input type="text" id="year" name="year" class="focus:outline-none focus:ring focus:border-indigo-500 shadow
+                                    appearance-none
+                                    border rounded-md w-full py-2 px-3 text-gray-700 mb-3
+                                    leading-tight focus:outline-none focus:shadow-outline">
+                            </div>
+                            <div class="mb-4 w-full">
+                                <label for="type" class="block text-sm mb-1">Type</label>
+                                <select id="type" name="type" class="focus:outline-none focus:ring focus:border-indigo-500 shadow
+                                    border rounded-md w-full py-2 px-3 text-gray-700 mb-3
+                                    leading-tight focus:outline-none focus:shadow-outline">
+                                    {% for type in types %}
+                                    <option value="{{ type.name }}">{{ type.value | capitalize }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                        </div>
+                        <div class="mb-4">
+                            <label for="img_url" class="block text-sm mb-1">Image URL</label>
+                            <input type="text" id="img_url" name="img_url" class="focus:outline-none focus:ring
+                            focus:border-indigo-500 shadow
+                            appearance-none
+                            border rounded-md w-full py-2 px-3 text-gray-700 mb-3
+                            leading-tight focus:outline-none focus:shadow-outline">
+                        </div>
+                    </div>
+                    <div class="flex-auto">
+                        <div class="mb-4">
+                            <label for="description" class="block text-sm mb-1">Description</label>
+                            <input type="text" id="description" name="description" class="focus:outline-none focus:ring focus:border-indigo-500 shadow
+                            appearance-none
+                            border rounded-md w-full py-2 px-3 text-gray-700 mb-3
+                            leading-tight focus:outline-none focus:shadow-outline">
+                        </div>
+                        <div class="mb-4">
+                            <label for="region" class="block text-sm mb-1">Region</label>
+                            <input type="text" id="region" name="region" class="focus:outline-none focus:ring
+                            focus:border-indigo-500 shadow
+                            appearance-none opacity-50 cursor-not-allowed
+                            border rounded-md w-full py-2 px-3 text-gray-700 mb-3
+                            leading-tight focus:outline-none focus:shadow-outline"
+                                value="{{ shelf.region.name | capitalize }}">
+                        </div>
+                        <div class="mb-4">
+                            <label for="price" class="block text-sm mb-1">Price</label>
+                            <input type="text" id="price" name="price" class="focus:outline-none focus:ring
+                            focus:border-indigo-500 shadow
+                            appearance-none
+                            border rounded-md w-full py-2 px-3 text-gray-700 mb-3
+                            leading-tight focus:outline-none focus:shadow-outline">
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <button onclick="addBottle();"
+                class="bg-indigo-500 hover:bg-indigo-700 text-white py-2 px-4 rounded-md focus:outline-none focus:shadow-outline">Add
+                bottle</button>
+        </div>
+    </div>
+    <div class="flex justify-end">
+        <div class="mb-4">
+            <a href="{{ url_for('main.shelf', shelf_id=shelf.id) }}">
+                <button class="bg-gray-400 hover:bg-gray-500 text-white py-2 px-4 rounded-md
+                focus:outline-none focus:shadow-outline">Back to shelf</button>
+            </a>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    // Populate winesData from select options
+    var winesData = [];
+    var selectOptions = document.getElementById('wineSelect').getElementsByTagName('option');
+    for (var i = 0; i < selectOptions.length; i++) {
+        var wineData = {
+            id: selectOptions[i].value,
+            name: selectOptions[i].getAttribute('data-wine-name'),
+            vineyard: selectOptions[i].getAttribute('data-wine-vineyard'),
+            year: selectOptions[i].getAttribute('data-wine-year'),
+            type: selectOptions[i].getAttribute('data-wine-type'),
+            img_url: selectOptions[i].getAttribute('data-wine-img-url'),
+            description: selectOptions[i].getAttribute('data-wine-description'),
+            region: selectOptions[i].getAttribute('data-wine-region'),
+            price: selectOptions[i].getAttribute('data-wine-price'),
+        };
+        winesData.push(wineData);
+    }
+
+    document.getElementById('wineSelect').addEventListener('change', function () {
+        var selectedValue = this.value;
+
+        // Get all input elements
+        var inputElements = document.querySelectorAll('input, select');
+        var wineImage = document.querySelector('.wine-image');
+
+        // Check if the selected value is not 0
+        if (selectedValue !== '0') {
+            // Find the selected wine data from winesData
+            var selectedWine = winesData.find(function (wine) {
+                return wine.id == selectedValue;
+            });
+
+            // Update input values based on selected wine
+            document.getElementById('name').value = selectedWine.name;
+            document.getElementById('vineyard').value = selectedWine.vineyard;
+            document.getElementById('year').value = selectedWine.year;
+            document.getElementById('img_url').value = selectedWine.img_url;
+            document.getElementById('description').value = selectedWine.description;
+            document.getElementById('price').value = selectedWine.price;
+            document.getElementById('region').value = selectedWine.region;
+
+            // Update type dropdown based on selected wine
+            var typeDropdown = document.getElementById('type');
+            for (var i = 0; i < typeDropdown.options.length; i++) {
+                console.log(typeDropdown.options[i].innerText.toLowerCase());
+                console.log(selectedWine.type.toLowerCase());
+                if (typeDropdown.options[i].innerText.toLowerCase() == selectedWine.type.toLowerCase()) {
+                    typeDropdown.options[i].selected = true;
+                    break;
+                }
+            }
+            // Update image source based on selected wine's img_url
+            wineImage.src = selectedWine.img_url;
+
+            // Disable input elements
+            inputElements.forEach(function (input) {
+                if (input.id === 'wineSelect') {
+                    return;
+                }
+                if (input.id === 'region') {
+                    return;
+                }
+                input.disabled = true;
+                input.classList.add('opacity-50', 'cursor-not-allowed');
+            });
+        } else {
+            // Clear input values and enable input elements if the selected value is 0
+            inputElements.forEach(function (input) {
+                if (input.id === 'region') {
+                    return;
+                }
+                input.value = '';
+                input.disabled = false;
+                input.classList.remove('opacity-50', 'cursor-not-allowed');
+            });
+
+            // Reset image source to a default image when the selected value is 0
+            wineImage.src = 'https://pics.clipartpng.com/Wine_Bottle_PNG_Clipart-98.png';
+        }
+    });
+
+    // Function to add a bottle
+    async function addBottle() {
+        var wineSelectValue = document.getElementById('wineSelect').value;
+
+        if (wineSelectValue === '0') {
+            try {
+                const wineId = await postWine();
+                console.log(wineId);
+                if (wineId) {
+                    postBottle(wineId);
+                }
+            } catch (error) {
+                // Handle error if postWine fails
+                console.error('Error while posting wine:', error);
+            }
+        } else {
+            postBottle();
+        }
+        console.log('Adding bottle...');
+    }
+
+
+
+    function postWine() {
+        var wineSelectValue = document.getElementById('wineSelect').value;
+
+        if (wineSelectValue === '0') {
+            var name = document.getElementById('name').value;
+            var vineyard = document.getElementById('vineyard').value;
+            var year = document.getElementById('year').value;
+            var type = document.getElementById('type').value;
+            var img_url = document.getElementById('img_url').value;
+            var description = document.getElementById('description').value;
+            var price = document.getElementById('price').value;
+
+            return new Promise((resolve, reject) => {
+                fetch("{{ url_for('wine.wine_post') }}", {
+                    method: 'POST',
+                    body: JSON.stringify({
+                        name: name,
+                        vineyard: vineyard,
+                        year: parseInt(year, 10),
+                        wine_type: type,
+                        label_photo: img_url,
+                        description: description,
+                        region_id: parseInt("{{ shelf.region.id }}", 10),
+                        price: parseInt(price, 10)
+                    }),
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                })
+                    .then(response => response.json())
+                    .then(data => {
+                        console.log(data);
+                        if (data.error) {
+                            // Display an error toast using the error message
+                            createToast(data.error, 'error');
+                            reject(data.error);
+                        } else {
+                            // Display success toast or handle success case
+                            const text = data.message; // Adjust this based on your server response
+                            const messageType = 'success'; // Adjust based on your needs
+                            const wineId = data.wine.id;
+
+                            // Retrieve existing messages from local storage
+                            const existingMessages = JSON.parse(localStorage.getItem('notificationMessages')) || [];
+
+                            // Add the new message to the array
+                            existingMessages.push({ text, type: messageType });
+
+                            // Store the updated array in local storage
+                            localStorage.setItem('notificationMessages', JSON.stringify(existingMessages));
+
+                            resolve(wineId);
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Error:', error);
+                        createToast('An error occurred', 'error');
+                        reject(error);
+                    })
+                    .finally(() => {
+                        // Set all buttons with data-bottle-id attribute back to normal state after fetch is complete
+                        setButtonDisabledState(false);
+                    });
+            });
+        }
+    }
+    function postBottle(wineId) {
+        var wineSelectValue = document.getElementById('wineSelect').value;
+
+        var shelfId = "{{ shelf.id }}"
+        if (wineSelectValue !== '0') {
+            var wineSelectValue = document.getElementById('wineSelect').value;
+        } else {
+            var wineSelectValue = wineId;
+        }
+        fetch("{{ url_for('bottle.bottle_post') }}", {
+            method: 'POST',
+            body: JSON.stringify({
+                wine_id: parseInt(wineSelectValue, 10),
+                shelf_id: parseInt(shelfId, 10)
+            }),
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        })
+            .then(response => response.json())
+            .then(data => {
+                console.log(data);
+                if (data.error) {
+                    // Display an error toast using the error message
+                    createToast(data.error, 'error');
+                } else {
+                    // Display success toast or handle success case
+                    const text = data.message; // Adjust this based on your server response
+                    const messageType = 'success'; // Adjust based on your needs
+
+                    // Retrieve existing messages from local storage
+                    const existingMessages = JSON.parse(localStorage.getItem('notificationMessages')) || [];
+
+                    // Add the new message to the array
+                    existingMessages.push({ text, type: messageType });
+
+                    // Store the updated array in local storage
+                    localStorage.setItem('notificationMessages', JSON.stringify(existingMessages));
+
+                    // Redirect to the specified URL
+                    window.location.href = "{{ url_for(request.endpoint, shelf_id=shelf.id) }}";
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                createToast('An error occurred', 'error');
+            })
+            .finally(() => {
+                // Set all buttons with data-bottle-id attribute back to normal state after fetch is complete
+                setButtonDisabledState(false);
+            });
+    }
+
+    document.getElementById('img_url').addEventListener('change', function () {
+        var imageUrl = this.value;
+        var wineImage = document.querySelector('.wine-image');
+
+        // Validate the URL format
+        var urlPattern = /^(https?|ftp):\/\/[^\s/$.?#].[^\s]*$/i;
+        if (urlPattern.test(imageUrl)) {
+            // Update the image source based on the entered URL
+            wineImage.src = imageUrl;
+        }
+    });
+</script>
+{% endblock %}

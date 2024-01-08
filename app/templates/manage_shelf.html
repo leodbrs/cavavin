@@ -1,0 +1,110 @@
+{% extends "base.html" %}
+
+{% block title %}Cellar{% endblock %}
+
+{% block content %}
+<h1 class="text-3xl font-bold mb-4">Shelf {{ shelf.number }}</h1>
+<h2 class="text-2xl font-bold mb-4">Free space : {{ shelf.available_spaces }}/{{ shelf.bottles_per_shelf }}</h2>
+{% if shelf.available_spaces > 0 %}
+<a href="{{ url_for('main.bottle') }}?shelf_id={{ shelf.id }}">
+    <button class="bg-indigo-500 hover:bg-indigo-700 text-white py-2 px-4 rounded-md
+focus:outline-none focus:shadow-outline mb-4">Add bottle</button></a>
+{% else %}
+<button class="bg-indigo-500 hover:bg-indigo-700 text-white py-2 px-4 rounded-md focus:outline-none
+        focus:shadow-outline mb-4 opacity-50 cursor-not-allowed" disabled>Add
+    bottle</button>
+{% endif %}
+<table class="table-fixed w-full">
+    <thead>
+        <tr>
+            <th class="border px-4 py-2">Vineyard</th>
+            <th class="border px-4 py-2">Name</th>
+            <th class="border px-4 py-2">Type</th>
+            <th class="border px-4 py-2">Year</th>
+            <th class="border px-4 py-2">Region</th>
+            <th class="border px-4 py-2">Community Rating</th>
+            <th class="border px-4 py-2">Price</th>
+            <th class="border px-4 py-2"></th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for bottle in shelf.bottles %}
+        <tr>
+            <td class="border px-4 py-2">{{ bottle.wine.vineyard }}</td>
+            <td class="border px-4 py-2">{{ bottle.wine.name }}</td>
+            <td class="border px-4 py-2">{{ bottle.wine.type.value | capitalize }}</td>
+            <td class="border px-4 py-2">{{ bottle.wine.year }}</td>
+            <td class="border px-4 py-2">{{ bottle.wine.region.name | capitalize }}</td>
+            {% if bottle.wine.community_rating is none %}
+            <td class="border px-4 py-2">No rating yet</td>
+            {% else %}
+            <td class="border px-4 py-2">{{ bottle.wine.community_rating }}</td>
+            {% endif %}
+            <td class="border px-4 py-2">{{ bottle.wine.price }}</td>
+            <td class="border px-4 py-2">
+                <button class="bg-red-500 hover:bg-red-700 text-white py-2 px-4 rounded-md
+                focus:outline-none focus:shadow-outline" data-bottle-id="{{ bottle.id }}"
+                    onclick="deleteBottle(this)">Delete</button>
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    function setButtonDisabledState(current_button, disabled) {
+        if (disabled) {
+            current_button.classList.add('opacity-50', 'cursor-not-allowed');
+        } else {
+            current_button.classList.remove('opacity-50', 'cursor-not-allowed');
+        }
+    }
+
+    function deleteBottle(button) {
+        var bottleId = button.getAttribute('data-bottle-id');
+
+        // Set all buttons with data-bottle-id attribute to disabled state
+        setButtonDisabledState(button, true);
+
+        var url = '{{ url_for("bottle.delete", bottle_id=1) }}'.slice(0, -1) + bottleId;
+
+        fetch(url, {
+            method: 'DELETE',
+        })
+            .then(response => response.json())
+            .then(data => {
+                console.log(data);
+                if (data.error) {
+                    // Display an error toast using the error message
+                    createToast(data.error, 'error');
+                } else {
+                    // Display success toast or handle success case
+                    const text = data.message; // Adjust this based on your server response
+                    const messageType = 'success'; // Adjust based on your needs
+
+                    // Retrieve existing messages from local storage
+                    const existingMessages = JSON.parse(localStorage.getItem('notificationMessages')) || [];
+
+                    // Add the new message to the array
+                    existingMessages.push({ text, type: messageType });
+
+                    // Store the updated array in local storage
+                    localStorage.setItem('notificationMessages', JSON.stringify(existingMessages));
+
+                    // Redirect to the specified URL
+                    window.location.href = "{{ url_for(request.endpoint, shelf_id=shelf.id) }}";
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                createToast('An error occurred', 'error');
+            })
+            .finally(() => {
+                // Set all buttons with data-bottle-id attribute back to normal state after fetch is complete
+                setButtonDisabledState(false);
+            });
+    }
+</script>
+{% endblock %}
