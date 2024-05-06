@@ -59,6 +59,6 @@ stevedore==5.1.0
 tomlkit==0.12.3
 typing_extensions==4.8.0
 validators==0.22.0
-Werkzeug==3.0.1
+Werkzeug==3.0.3
 wheel==0.41.3
 WTForms==3.1.1
